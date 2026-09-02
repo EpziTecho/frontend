@@ -1,3 +1,5 @@
+import { EpziTechLogo } from './EpziTechLogo.jsx';
+
 export function Card({ children, className = '' }) {
   return (
     <div className={`bg-surface-container-lowest border border-outline-variant rounded-lg p-md ${className}`}>
@@ -49,9 +51,13 @@ export function Select({ label, children, className = '', ...props }) {
 
 export function MarcaEpziTech({ className = '' }) {
   return (
-    <p className={`text-xs text-on-surface-variant text-center ${className}`}>
-      Sistema desarrollado y de propiedad de <span className="font-semibold text-secondary">EpziTech</span>
-    </p>
+    <div className={`flex flex-col items-center gap-xs text-center pt-sm ${className}`}>
+      <EpziTechLogo className="w-5 h-5 shrink-0" />
+      <p className="text-xs text-on-surface-variant leading-snug">
+        Sistema desarrollado y de propiedad de{' '}
+        <span className="font-semibold text-secondary">EpziTech</span>
+      </p>
+    </div>
   );
 }
 
