@@ -2,9 +2,12 @@ import { useState } from 'react';
 import { NavLink, Outlet } from 'react-router-dom';
 import { useAuth } from '../auth/AuthContext.jsx';
 import { Icon } from './Icon.jsx';
+import { MarcaEpziTech } from './ui.jsx';
+
+const CONTACTO = { to: '/contacto', label: 'Contacto', icon: 'support_agent' };
 
 const NAV_POR_ROL = {
-  superadmin: [{ to: '/locales', label: 'Locales', icon: 'storefront' }],
+  superadmin: [{ to: '/locales', label: 'Locales', icon: 'storefront' }, CONTACTO],
   dueno: [
     { to: '/', label: 'Dashboard', icon: 'grid_view', end: true },
     { to: '/inventario', label: 'Inventario', icon: 'inventory_2' },
@@ -13,12 +16,14 @@ const NAV_POR_ROL = {
     { to: '/cierre-caja', label: 'Cierre de Caja', icon: 'lock' },
     { to: '/usuarios', label: 'Personal', icon: 'group' },
     { to: '/reporte-mensual', label: 'Reporte Mensual', icon: 'monitoring' },
+    CONTACTO,
   ],
   panadero: [
     { to: '/', label: 'Producción', icon: 'skillet', end: true },
     { to: '/inventario', label: 'Inventario', icon: 'inventory_2' },
+    CONTACTO,
   ],
-  cajero: [{ to: '/', label: 'Punto de Venta', icon: 'point_of_sale', end: true }],
+  cajero: [{ to: '/', label: 'Punto de Venta', icon: 'point_of_sale', end: true }, CONTACTO],
 };
 
 function NavItems({ items, onNavigate }) {
@@ -73,6 +78,7 @@ export function Layout() {
           <Icon name="logout" />
           Cerrar sesión
         </button>
+        <MarcaEpziTech className="pb-md" />
       </aside>
 
       {/* Panel deslizable -- solo mobile/tablet */}
@@ -99,12 +105,16 @@ export function Layout() {
               <Icon name="logout" />
               Cerrar sesión
             </button>
+            <MarcaEpziTech className="pb-md" />
           </div>
         </div>
       )}
 
-      <main className="flex-1 p-md md:p-lg bg-surface-container-low min-w-0">
-        <Outlet />
+      <main className="flex-1 p-md md:p-lg bg-surface-container-low min-w-0 flex flex-col">
+        <div className="flex-1">
+          <Outlet />
+        </div>
+        <MarcaEpziTech className="pt-lg md:hidden" />
       </main>
     </div>
   );

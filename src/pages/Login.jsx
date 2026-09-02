@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../auth/AuthContext.jsx';
-import { Button, Input, ErrorBanner } from '../components/ui.jsx';
+import { Button, Input, ErrorBanner, MarcaEpziTech } from '../components/ui.jsx';
 
 export function Login() {
   const { login } = useAuth();
@@ -38,6 +38,7 @@ export function Login() {
           <ErrorBanner error={error} />
           <Button type="submit" disabled={cargando}>{cargando ? 'Ingresando…' : 'Ingresar'}</Button>
         </form>
+        <MarcaEpziTech className="mt-lg" />
       </div>
     </div>
   );

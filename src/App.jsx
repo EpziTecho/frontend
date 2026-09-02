@@ -12,6 +12,7 @@ import { PuntoDeVenta } from './pages/PuntoDeVenta.jsx';
 import { CierreDeCaja } from './pages/CierreDeCaja.jsx';
 import { Usuarios } from './pages/Usuarios.jsx';
 import { ReporteMensual } from './pages/ReporteMensual.jsx';
+import { Contacto } from './pages/Contacto.jsx';
 
 // La pantalla de inicio ("/") depende del rol -- cada uno tiene su propia
 // vista principal (02. Analisis del Negocio.md §7).
@@ -40,6 +41,7 @@ export default function App() {
         <Route path="/cierre-caja" element={<ProtectedRoute roles={['dueno']}><CierreDeCaja /></ProtectedRoute>} />
         <Route path="/usuarios" element={<ProtectedRoute roles={['dueno']}><Usuarios /></ProtectedRoute>} />
         <Route path="/reporte-mensual" element={<ProtectedRoute roles={['dueno']}><ReporteMensual /></ProtectedRoute>} />
+        <Route path="/contacto" element={<Contacto />} />
       </Route>
 
       <Route path="*" element={<Navigate to="/" replace />} />

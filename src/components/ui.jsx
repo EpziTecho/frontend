@@ -47,6 +47,14 @@ export function Select({ label, children, className = '', ...props }) {
   );
 }
 
+export function MarcaEpziTech({ className = '' }) {
+  return (
+    <p className={`text-xs text-on-surface-variant text-center ${className}`}>
+      Sistema desarrollado y de propiedad de <span className="font-semibold text-secondary">EpziTech</span>
+    </p>
+  );
+}
+
 export function ErrorBanner({ error }) {
   if (!error) return null;
   return (
