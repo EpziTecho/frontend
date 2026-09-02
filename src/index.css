@@ -1,0 +1,73 @@
+@import "tailwindcss";
+
+/* Tema portado de mockups/miga_masa_operational_system/DESIGN.md,
+   confirmado en 06. Arquitectura Tecnica.md §7. */
+@theme {
+  --color-surface: #fbf9f1;
+  --color-surface-dim: #dcdad2;
+  --color-surface-bright: #fbf9f1;
+  --color-surface-container-lowest: #ffffff;
+  --color-surface-container-low: #f5f4ec;
+  --color-surface-container: #f0eee6;
+  --color-surface-container-high: #eae8e0;
+  --color-surface-container-highest: #e4e3db;
+  --color-on-surface: #1b1c17;
+  --color-on-surface-variant: #504442;
+  --color-outline: #827471;
+  --color-outline-variant: #d4c3bf;
+
+  --color-primary: #4e342e;
+  --color-on-primary: #ffffff;
+  --color-secondary: #d87d4a;
+  --color-on-secondary: #ffffff;
+  --color-tertiary: #f5a623;
+  --color-on-tertiary: #ffffff;
+
+  --color-error: #ba1a1a;
+  --color-on-error: #ffffff;
+  --color-error-container: #ffdad6;
+  --color-on-error-container: #93000a;
+
+  --font-sans: "Work Sans", sans-serif;
+  --font-mono: "JetBrains Mono", monospace;
+
+  --spacing-xs: 4px;
+  --spacing-sm: 12px;
+  --spacing-md: 24px;
+  --spacing-lg: 40px;
+  --spacing-xl: 64px;
+
+  /* OJO: en Tailwind v4, max-w-sm/md/lg/xl (y w-/h- con esas mismas
+     claves) leen de este mismo --spacing-{clave}, no de una escala de
+     contenedor aparte. No usar max-w-sm/md/lg/xl en el código -- da
+     anchos de 12/24/40/64px en vez de un contenedor real. Usar el
+     valor numérico (max-w-96) o un arbitrario (max-w-[24rem]). */
+
+  /* "DEFAULT" en Tailwind v4 se escribe sin sufijo -- --radius-DEFAULT
+     no existe como clave y dejaba a `.rounded` con el 0.25rem de
+     fábrica en vez de este valor. */
+  --radius: 0.5rem;
+  --radius-lg: 1rem;
+  --radius-xl: 1.5rem;
+}
+
+body {
+  background-color: var(--color-surface);
+  color: var(--color-on-surface);
+  font-family: var(--font-sans);
+}
+
+/* Icon font -- mismo set que los mockups (Material Symbols Outlined) */
+.material-symbols-outlined {
+  font-family: "Material Symbols Outlined";
+  font-weight: normal;
+  font-style: normal;
+  font-size: 24px;
+  line-height: 1;
+  letter-spacing: normal;
+  text-transform: none;
+  display: inline-block;
+  white-space: nowrap;
+  word-wrap: normal;
+  direction: ltr;
+}
