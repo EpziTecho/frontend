@@ -1,0 +1,5 @@
+{
+  "rewrites": [
+    { "source": "/api/(.*)", "destination": "https://backend-pearl-seven-29.vercel.app/$1" }
+  ]
+}
