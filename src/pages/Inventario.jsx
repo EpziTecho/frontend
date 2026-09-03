@@ -2,11 +2,39 @@ import { useEffect, useState } from 'react';
 import { useAuth } from '../auth/AuthContext.jsx';
 import { api } from '../api/index.js';
 import { Card, Button, Input, Select, ErrorBanner } from '../components/ui.jsx';
+import { Icon } from '../components/Icon.jsx';
 
 const INSUMO_VACIO = { nombre: '', unidad_medida: 'kg', cantidad_stock: 0 };
 const UNIDADES = ['kg', 'g', 'L', 'mL', 'unidad', 'docena', 'saco', 'barra'];
 
 export function Inventario() {
+  const [tab, setTab] = useState('materia_prima');
+
+  return (
+    <div className="flex flex-col gap-lg">
+      <h1 className="text-2xl font-bold">Inventario</h1>
+
+      <div className="flex gap-sm border-b border-outline-variant overflow-x-auto">
+        <button
+          onClick={() => setTab('materia_prima')}
+          className={`px-md py-sm font-semibold border-b-2 -mb-px whitespace-nowrap shrink-0 ${tab === 'materia_prima' ? 'border-secondary text-secondary' : 'border-transparent text-on-surface-variant'}`}
+        >
+          Materia Prima
+        </button>
+        <button
+          onClick={() => setTab('producto_terminado')}
+          className={`px-md py-sm font-semibold border-b-2 -mb-px whitespace-nowrap shrink-0 ${tab === 'producto_terminado' ? 'border-secondary text-secondary' : 'border-transparent text-on-surface-variant'}`}
+        >
+          Producto Terminado
+        </button>
+      </div>
+
+      {tab === 'materia_prima' ? <MateriaPrima /> : <ProductoTerminado />}
+    </div>
+  );
+}
+
+function MateriaPrima() {
   const { sesion } = useAuth();
   const [insumos, setInsumos] = useState([]);
   const [nuevo, setNuevo] = useState(INSUMO_VACIO);
@@ -57,7 +85,6 @@ export function Inventario() {
 
   return (
     <div className="flex flex-col gap-lg">
-      <h1 className="text-2xl font-bold">Inventario de materia prima</h1>
       <ErrorBanner error={error} />
 
       <Card>
@@ -108,6 +135,89 @@ export function Inventario() {
           </Card>
         ))}
         {insumos.length === 0 && <p className="text-on-surface-variant">Todavía no hay insumos cargados.</p>}
+      </div>
+    </div>
+  );
+}
+
+const hoy = () => new Date().toISOString().slice(0, 10);
+
+function sumarDias(fecha, delta) {
+  const d = new Date(fecha + 'T00:00:00');
+  d.setDate(d.getDate() + delta);
+  return d.toISOString().slice(0, 10);
+}
+
+function ProductoTerminado() {
+  const { sesion } = useAuth();
+  const [fecha, setFecha] = useState(hoy());
+  const [filas, setFilas] = useState([]); // [{ producto, stock, producido_ese_dia, vendido_ese_dia }]
+  const [cargando, setCargando] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    let cancelado = false;
+    setCargando(true);
+    setError(null);
+    (async () => {
+      try {
+        const { productos } = await api.productos.listar(sesion.token);
+        const datos = await Promise.all(
+          productos.map((p) => api.productos.stock(sesion.token, p.id, fecha).then((r) => ({ producto: p, ...r })))
+        );
+        if (!cancelado) setFilas(datos);
+      } catch (err) {
+        if (!cancelado) setError(err.message);
+      } finally {
+        if (!cancelado) setCargando(false);
+      }
+    })();
+    return () => { cancelado = true; };
+  }, [fecha]);
+
+  return (
+    <div className="flex flex-col gap-lg">
+      <div className="flex items-center justify-between">
+        <p className="text-sm text-on-surface-variant max-w-96">
+          Se calcula automáticamente: lo producido menos lo vendido. No se edita a mano.
+        </p>
+        <div className="flex items-center gap-xs shrink-0">
+          <button onClick={() => setFecha(sumarDias(fecha, -1))} className="p-sm" aria-label="Día anterior">
+            <Icon name="chevron_left" />
+          </button>
+          <span className="font-mono text-sm whitespace-nowrap">{fecha === hoy() ? `Hoy, ${fecha}` : fecha}</span>
+          <button onClick={() => setFecha(sumarDias(fecha, 1))} className="p-sm" aria-label="Día siguiente">
+            <Icon name="chevron_right" />
+          </button>
+        </div>
+      </div>
+
+      <ErrorBanner error={error} />
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-md">
+        {filas.map(({ producto, stock, producido_ese_dia, vendido_ese_dia }) => (
+          <Card key={producto.id}>
+            <div className="flex justify-between items-start">
+              <h3 className="font-semibold text-lg">{producto.nombre}</h3>
+              {stock <= 0 && (
+                <span className="text-xs font-semibold uppercase bg-error-container text-on-error-container px-sm py-xs rounded-full">
+                  Agotado
+                </span>
+              )}
+            </div>
+
+            <div className="flex gap-md mt-sm text-sm text-on-surface-variant">
+              <span>Producido: <b className="text-on-surface">{producido_ese_dia}</b></span>
+              <span>Vendido: <b className="text-on-surface">{vendido_ese_dia}</b></span>
+            </div>
+
+            <div className="mt-md pt-md border-t border-outline-variant">
+              <p className="text-xs text-on-surface-variant uppercase font-mono">En stock</p>
+              <p className="font-mono text-3xl font-bold">{stock}</p>
+            </div>
+          </Card>
+        ))}
+        {!cargando && filas.length === 0 && <p className="text-on-surface-variant">Todavía no hay productos en el catálogo.</p>}
       </div>
     </div>
   );
